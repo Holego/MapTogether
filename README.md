@@ -1,94 +1,86 @@
 # MapTogether
 
-Collaborative map and script editing for Godot 4, with host-owned saves,
-recoverable versions and chat.
+Collaborative map and script editing for Godot 4, with host-owned saves, recoverable versions, and chat.
 
-**MapTogether** — аддон для совместного редактирования карт и скриптов в Godot.
-Участники работают в своих копиях проекта, а хост сохраняет подтверждённые
-изменения и историю версий. Версия **0.1.0** предназначена для тестирования.
+**MapTogether** is an addon for collaborative map and script editing in Godot. Participants work in their own copies of the project, while the host saves confirmed changes and maintains version history. Version **0.1.0** is intended for testing.
 
-## Возможности
+## Features
 
-- Совместная работа над одной сценой: разные объекты и свойства объединяются
-  относительно общей сохранённой версии.
-- Проверка конфликтов: одновременная правка одного свойства или участка скрипта
-  сохраняет обе версии для явного выбора.
-- Автосохранение карты и открытых скриптов, включая работу в одиночку и новые
-  сцены без имени.
-- История полных версий по SHA-256, журнал хоста и сохранённая на диске очередь
-  неподтверждённых изменений. Повтор отправки не откатывает хост.
-- Передача ресурсов и файлов сторонних аддонов без списка разрешённых расширений;
-  файлы передаются частями с проверкой целостности.
-- Компактная панель подключения, присутствие участников в сцене, чат,
-  открытие обычной панели Output Godot.
-- Отдельный TCP-транспорт, не использующий игровой `MultiplayerAPI` проекта.
+- **Collaborative scene editing:** Changes to different objects and properties are merged against a shared saved version.
+- **Conflict detection:** Simultaneous edits to the same property or script section preserve both versions for manual resolution.
+- **Autosaving:** Automatically saves maps and open scripts, including when working alone or editing new, unnamed scenes.
+- **Version history:** Full versions tracked using SHA-256, a host-side log, and a persistent queue of unconfirmed changes. Retrying submissions does not roll back the host.
+- **Resource synchronization:** Transfers resources and third-party addon files without restricting file extensions. Files are transferred in chunks with integrity verification.
+- **Editor integration:** Compact connection panel, scene participant presence, chat, and quick access to Godot's standard Output panel.
+- **Independent networking:** Uses a separate TCP transport without interfering with the project's gameplay `MultiplayerAPI`.
 
-## Установка
+## Installation
 
-1. Скачайте `MapTogether-0.1.0.zip` из Releases или скопируйте папку
-   `addons/coop_collab` в проект.
-2. Включите **MapTogether** в «Проект → Настройки проекта → Плагины».
-3. Установите одинаковую версию на компьютерах всех участников.
-4. При переходе с Team Create или CoopSync отключите прежний аддон синхронизации,
-   сохраните работу и перезапустите Godot.
+1. Download `MapTogether-0.1.0.zip` from Releases, or copy the `addons/coop_collab` folder into your project.
+2. Enable **MapTogether** under **Project → Project Settings → Plugins**.
+3. Make sure all participants have the same version installed.
+4. If migrating from Team Create or CoopSync, disable the previous synchronization addon, save your work, and restart Godot.
 
-Проверенная версия движка — **Godot 4.7.2**. Совместимость с более ранними
-версиями Godot отдельно не проверялась.
+The addon has been tested with **Godot 4.7.2**. Compatibility with earlier Godot versions has not been separately verified.
 
-## Начало совместной работы
+## Getting Started
 
-На компьютере с основной картой откройте панель MapTogether и нажмите
-**Создать**. После подготовки файлов участник указывает IP хоста,
-порт **TCP 25568**, тот же пароль комнаты и нажимает **Войти**.
-Для интернета используйте доступный TCP-порт или общую VPN-сеть.
+On the computer containing the main map, open the MapTogether panel and click **Create**.
 
-Откройте карту в обеих копиях и редактируйте её вместе. Автосохранение включено
-по умолчанию. Если связь пропала, очередь остаётся на диске; для повторного
-подключения нажмите **Войти**. Кнопка **Конфликты** позволяет выбрать версию,
-сохранив обе в истории.
+Once the files are ready, other participants can enter the host's IP address, port **TCP 25568**, and the same room password, then click **Join**.
 
-Подтверждённое изменение находится на хосте. До подтверждения правка остаётся
-в локальной очереди участника. Папку `.coop_collab` нужно сохранять вместе
-с резервными копиями; передавать её новому участнику не нужно.
+For collaboration over the internet, use an accessible TCP port or a shared VPN network.
 
-## Демонстрация
+Open the map in both project copies and start editing together. Autosaving is enabled by default.
 
-Откройте этот репозиторий как проект Godot. Запустите
-`scenes/map_together_playground.tscn` через **F6**. В сцене есть три цветных
-объекта для проверки совместного редактирования и тестовый персонаж:
-WASD/стрелки — движение, Space — прыжок, щелчок — захват мыши,
-Esc — освободить мышь, R — вернуться на площадку.
+If the connection is lost, pending changes remain saved on disk. Click **Join** to reconnect.
 
-Для двух редакторов на одном компьютере используйте две разные копии папки
-проекта и подключение к `127.0.0.1`.
+The **Conflicts** button allows you to choose which version to keep, while preserving both versions in the history.
 
-## Ограничения 0.1.0
+Confirmed changes are stored on the host. Until confirmation, edits remain in the participant's local queue.
 
-- Это первая тестовая версия. Полный сеанс двух графических редакторов
-  на разных компьютерах в среде разработки ещё не проверен.
-- Пересекающиеся правки, одновременные изменения двоичных файлов и некоторых
-  вложенных инстансов требуют явного разрешения конфликта.
-- Скрипты объединяются по непересекающимся диапазонам строк; посимвольного
-  совместного редактора пока нет.
-- Удаление файлов проекта автоматически не распространяется. Удаление узлов
-  карты учитывается при объединении с проверкой конфликтов.
-- Поддерживаются сохраняемые самим Godot данные аддонов. Данные во внешних
-  службах и побочные эффекты `@tool`-скриптов требуют отдельной проверки.
-- Автоматического переподключения и шифрования TCP пока нет. Используйте
-  доверенных участников и доверенную сеть или VPN.
-- Лимита количества узлов нет; время сохранения и объединения зависит
-  от размера сцены, ресурсов, диска и сети.
+The `.coop_collab` folder should be included in your backups. There is no need to share this folder with new participants.
 
-## Проверка и документация
+## Demo
+
+Open this repository as a Godot project.
+
+Run `scenes/map_together_playground.tscn` using **F6**.
+
+The scene includes three colored objects for testing collaborative editing and a playable test character.
+
+**Controls:**
+
+- **WASD / Arrow keys:** Move
+- **Space:** Jump
+- **Mouse click:** Capture mouse
+- **Esc:** Release mouse
+- **R:** Return to the platform
+
+To test two editors on the same computer, use two separate copies of the project folder and connect through `127.0.0.1`.
+
+## Limitations in 0.1.0
+
+- This is the first testing release. A complete session with two graphical editors running on separate computers has not yet been verified in the development environment.
+- Overlapping edits, simultaneous changes to binary files, and certain nested scene instances require manual conflict resolution.
+- Scripts are merged based on non-overlapping line ranges. Real-time character-by-character collaborative editing is not yet supported.
+- Project file deletions are not automatically synchronized. Scene node deletions are handled during merging with conflict detection.
+- Addon data saved directly by Godot is supported. Data stored in external services and side effects of `@tool` scripts require separate verification.
+- Automatic reconnection and TCP encryption are not yet implemented. Only collaborate with trusted participants over trusted networks or a VPN.
+- There is no fixed limit on the number of nodes. Saving and merging performance depends on scene size, resources, disk performance, and network conditions.
+
+## Testing and Documentation
 
 ```bash
 python3 tools/test_map_together.py
 ```
 
-Нужны Python 3 и Godot 4.7.2. Для другого пути к движку задайте `GODOT_BIN`.
-Тесты используют отдельный временный проект, сохраняя рабочую карту.
-Набор этого репозитория содержит **68 проверок**. Во время разработки
-также проверены реальные данные PoiBuilder из проекта CoopGD — **71 проверка**.
+**Requirements:** Python 3 and Godot 4.7.2.
 
-[Полная инструкция и восстановление версий](docs/usage.md) ·
-[Изменения версии 0.1.0](CHANGELOG.md)
+To use a different Godot executable, set the `GODOT_BIN` environment variable.
+
+Tests run in a separate temporary project to avoid modifying your working map.
+
+The test suite included in this repository contains **68 checks**. During development, real PoiBuilder data from the CoopGD project was also tested, bringing that test run to **71 checks**.
+
+[Full Usage Guide and Version Recovery](docs/usage.md) · [Version 0.1.0 Changelog](CHANGELOG.md)
