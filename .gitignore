@@ -1,0 +1,7 @@
+.godot/
+.coop_collab/
+.team_create/
+android/
+dist/
+__pycache__/
+*.pyc
